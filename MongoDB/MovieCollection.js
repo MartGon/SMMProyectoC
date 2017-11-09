@@ -5,6 +5,8 @@ db = conn.getDB("myDatabase");
 
 db.createCollection(peliculas, { nombre: <string>,
                                  path: <string>,
+                                 resolucionH: <number>,
+                                 resolucionV: <number>,
                                  duracion: <number>,
                                  framerate: <number>,
                                  codec: <string>,
