@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(methodOverride());
 
-db = mongoose.createConnection('mongodb://localhost:27017/tvshows', function(err, res) 
+db = mongoose.createConnection('mongodb://localhost:27017/peliculas', function(err, res) 
  {
   if(err) 
     console.log('ERROR: connecting to Database. ' + err);
@@ -21,8 +21,8 @@ db = mongoose.createConnection('mongodb://localhost:27017/tvshows', function(err
 	app.use(methodOverride());
 
 	// Import Models and controllers
-	var models     = require('./models/tvshow')(app, mongoose);
-	var TVShowCtrl = require('./controllers/tvshows');
+	var models     = require('./models/peliculas')(app, mongoose);
+	var TVShowCtrl = require('./controllers/peliculasController');
 
 	// Example Route
 	var router = express.Router();
@@ -33,19 +33,19 @@ db = mongoose.createConnection('mongodb://localhost:27017/tvshows', function(err
 	app.use(router);
 
 	// API routes
-	var tvshows = express.Router();
+	var peliculas = express.Router();
 
-	tvshows.route('/tvshows')
+	peliculas.route('/peliculas')
 	  .get(TVShowCtrl.findAllTVShows)
 	  //.get(function(req, res) {res.send("Hello world!");})
 	  .post(TVShowCtrl.addTVShow);
 
-	tvshows.route('/tvshows/:id')
+	peliculas.route('/peliculas/:id')
 	  .get(TVShowCtrl.findById)
 	  .put(TVShowCtrl.updateTVShow)
 	  .delete(TVShowCtrl.deleteTVShow);
 
-	app.use(tvshows);
+	app.use(peliculas);
   
     app.listen(3000, function() 
     {
