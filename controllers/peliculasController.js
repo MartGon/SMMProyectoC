@@ -8,11 +8,28 @@ var url = 'mongodb://localhost:27017/peliculas';
 exports.findAllTVShows = function(req, res) 
 {
 	console.log('GET /peliculas')
-	TVShow.find(function(err, peliculas) 
+	/* TVShow.find(function(err, peliculas) 
 	{
-		if(err) res.send(500, err.message);
+		console.log('GET /peliculas; Inside find')
+		if(err) res.send(400, err.message);
 		res.status(200).jsonp(peliculas);
-	});
+	}); */
+	
+	MongoClient.connect(url, function(err, db) 
+	{
+		if (err) throw err;
+
+		db.collection("peliculas").find({}).toArray(function(err, pelicula)
+		{
+			if (err) throw err;
+			console.log("Contestando todas las pelis:");
+			console.log(pelicula);
+			res.json(pelicula);
+			db.close();
+		});
+	}); 
+	
+	
 };
 
 exports.HelloWorldFromTV = function(req, res)
@@ -24,11 +41,12 @@ exports.HelloWorldFromTV = function(req, res)
 
 //GET - Return a TVShow with specified ID
 exports.findById = function(req, res) {
-	TVShow.findById(req.params.id, function(err, tvshow) {
-    if(err) return res.send(500, err.message);
+	TVShow.findById(req.params.id, function(err, tvshow) 
+	{
+		if(err) return res.send(500, err.message);
 
-    console.log('GET /tvshow/' + req.params.id);
-		res.status(200).jsonp(tvshow);
+		console.log('GET /tvshow/' + req.params.id);
+			res.status(200).jsonp(tvshow);
 	});
 };
 
