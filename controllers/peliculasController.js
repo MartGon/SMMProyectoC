@@ -1,17 +1,16 @@
 //File: controllers/tvshows.js
 var mongoose = require('mongoose');
-var TVShow  = mongoose.model('TVShow');
+var TVShow  = mongoose.model('Pelicula');
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost:27017/peliculas';
 
 //GET - Return all tvshows in the DB
 exports.findAllTVShows = function(req, res) 
 {
+	console.log('GET /peliculas')
 	TVShow.find(function(err, peliculas) 
 	{
 		if(err) res.send(500, err.message);
-
-		console.log('GET /peliculas')
 		res.status(200).jsonp(peliculas);
 	});
 };
