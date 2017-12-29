@@ -13,6 +13,8 @@ import os.path
 
 from Functions import getVideoData
 from Functions import getConfData
+from Functions import getBitRate
+
 from pymongo import MongoClient
 from copy import deepcopy
 
@@ -40,22 +42,15 @@ if len(sys.argv) != 3:
 	print ('\npython GenerateCopies.py <NombreArchivoVideo> <párametro>\n')
 	quit()
 
-flag = sys.argv[2]
-
-if flag == "-f":
-	flag = 1
-elif flag == "-r":
-	flag = 2
-elif flag == "-rf":
-	flag = 4
-elif flag == "-c":
-	flag = 8
-elif flag == "-g":
-	flag = 16
-elif flag == "-i":
-	flag = 32
-elif flag == "-all":
-	flag = 2**6 - 1
+flagmap = {	"-f": 1,
+			"-r": 2,
+			"-rf": 4,
+			"-c": 8,
+			"-g": 16,
+			"-i": 32,
+			"-all": 63}
+	
+flag = flagmap[str(sys.argv[2])]
 	
 print("El flag elegido es " + str(flag))
 
@@ -100,8 +95,9 @@ if flag & 1:
 		# Preparamos la inserccion en la base de datos
 		videoActual = copy.deepcopy(videoOriginal)
 		videoActual["nombre"] = OutputFileNameFPS
-		videoActual["path"] = "videos/" + OutputFileNameFPS
+		videoActual["path"] = ServerPath + OutputFileNameFPS
 		videoActual["framerate"] = e;
+		videoActual["bitrate"] = getBitRate(OutputFileNameFPS);
 		mongo_insert(videoActual)
 	
 # Generacion de videos por resolucion
@@ -130,9 +126,11 @@ if flag & 2:
 		# Preparamos la inserccion en la base de datos
 		videoActual = copy.deepcopy(videoOriginal)
 		videoActual["nombre"] = OutputFileNameRes
-		videoActual["path"] = "videos/" + OutputFileNameRes
+		videoActual["path"] = ServerPath + OutputFileNameRes
 		videoActual["resolucionH"] = resolucionH_actual;
 		videoActual["resolucionV"] = resolucionV_actual;
+		videoActual["bitrate"] = getBitRate(OutputFileNameRes);
+				
 		mongo_insert(videoActual)
 	
 # Generacion de videos por resolucion y FPS
@@ -164,10 +162,11 @@ if flag & 4:
 			# Preparamos la inserccion en la base de datos
 			videoActual = copy.deepcopy(videoOriginal)
 			videoActual["nombre"] = OutputFileNameCombinado
-			videoActual["path"] = "videos/" + OutputFileNameCombinado
+			videoActual["path"] = ServerPath + OutputFileNameCombinado
 			videoActual["framerate"] = e;
 			videoActual["resolucionH"] = resolucionH_actual;
 			videoActual["resolucionV"] = resolucionV_actual;
+			videoActual["bitrate"] = getBitRate(OutputFileNameCombinado);
 			
 			mongo_insert(videoActual)
 			
@@ -184,8 +183,9 @@ if flag & 8:
 		# Preparamos la inserccion en la base de datos
 		videoActual = copy.deepcopy(videoOriginal)
 		videoActual["nombre"] = OutputFileNameCodec
-		videoActual["path"] = "videos/" + OutputFileNameCodec
+		videoActual["path"] = ServerPath + OutputFileNameCodec
 		videoActual["codec"] = codec;
+		videoActual["bitrate"] = getBitRate(OutputFileNameCodec);
 		
 		mongo_insert(videoActual)
 	
@@ -202,8 +202,9 @@ if flag & 16:
 		# Preparamos la inserccion en la base de datos
 		videoActual = copy.deepcopy(videoOriginal)
 		videoActual["nombre"] = OutputFileNameGOP
-		videoActual["path"] = "videos/" + OutputFileNameGOP
+		videoActual["path"] = ServerPath + OutputFileNameGOP
 		videoActual["gop"] = GOP
+		videoActual["bitrate"] = getBitRate(OutputFileNameGOP);
 		
 		mongo_insert(videoActual)
 			
@@ -222,10 +223,11 @@ if flag & 32:
 		# Preparamos la inserccion en la base de datos
 		videoActual = copy.deepcopy(videoOriginal)
 		videoActual["nombre"] = OutputFileNameInterlace
-		videoActual["path"] = "videos/" + OutputFileNameInterlace
+		videoActual["path"] = ServerPath + OutputFileNameInterlace
 		videoActual["entrelazado"] = True
 		videoActual["resolucionH"] = resolucionH_actual;
 		videoActual["resolucionV"] = resolucionV_actual;
+		videoActual["bitrate"] = getBitRate(OutputFileNameInterlace);
 		
 		mongo_insert(videoActual)
 			

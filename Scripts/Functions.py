@@ -74,7 +74,7 @@ def getVideoData(InputFileName):
 			if e[0] == "I" and e != resultadoGOP_Array[1]:
 				break
 	
-	video["GOP"] = resultadoGOP_Final
+	video["gop"] = resultadoGOP_Final
 	
 	video["entrelazado"] = False
 	
@@ -132,3 +132,10 @@ def getConfData():
 	file.close()
 	
 	return conf
+
+def getBitRate(InputFileName):
+	# Cogemos el bitrate
+	resultadoBitrate = subprocess.check_output("ffprobe " + InputFileName + " -v error -show_entries format=bit_rate -of default=noprint_wrappers=1")
+	resultadoBitrate_Final = int(str(resultadoBitrate).replace("bit_rate=", "").replace("b'","").replace("\\r\\n'", ""))
+	
+	return resultadoBitrate_Final
