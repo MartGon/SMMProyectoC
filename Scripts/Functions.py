@@ -51,7 +51,7 @@ def getVideoData(InputFileName):
 
 		# Cogemos el bitrate
 	resultadoBitrate = subprocess.check_output("ffprobe " + InputFileName + " -v error -show_entries format=bit_rate -of default=noprint_wrappers=1")
-	resultadoBitrate_Final = int(str(resultadoBitrate).replace("bit_rate=", "").replace("b'","").replace("\\r\\n'", ""))
+	resultadoBitrate_Final = round(int(str(resultadoBitrate).replace("bit_rate=", "").replace("b'","").replace("\\r\\n'", ""))/1000)
 	
 	video["bitrate"] = resultadoBitrate_Final
 
@@ -136,6 +136,6 @@ def getConfData():
 def getBitRate(InputFileName):
 	# Cogemos el bitrate
 	resultadoBitrate = subprocess.check_output("ffprobe " + InputFileName + " -v error -show_entries format=bit_rate -of default=noprint_wrappers=1")
-	resultadoBitrate_Final = int(str(resultadoBitrate).replace("bit_rate=", "").replace("b'","").replace("\\r\\n'", ""))
+	resultadoBitrate_Final = round(int(str(resultadoBitrate).replace("bit_rate=", "").replace("b'","").replace("\\r\\n'", ""))/1000)
 	
 	return resultadoBitrate_Final
