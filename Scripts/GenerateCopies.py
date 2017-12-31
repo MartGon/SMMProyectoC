@@ -23,6 +23,10 @@ def mongo_insert(video):
 	if DBEnabled and collection.find_one(video) is None:
 		collection.insert_one(video)
 
+def mongo_getId(video):
+	peli=collection.find_one(video)
+	return peli["_id"]
+		
 # 	Config
 # Variables de configuración para la generación de las copias de vídeo
 conf = getConfData()
@@ -38,7 +42,7 @@ GOPList = conf["GOPList"]
 
 if len(sys.argv) != 3:
 	print ('Número de argumentos incorrecto. Hace falta el nombre del archivo de video y un parametro de los siguientes:\n')
-	print ('	-f	Conversión por FPS \n	-r	Conversión por resolucion \n	-rf	Conversión por FPS y resolucion (Híbrido) \n	-c	Conversion por codec\n	-g	Conversion por GOP\n	-i	Conversion por entrelazado y resolucion (Híbrido) \n	-all	Todas las conversiones	')
+	print ('	-f	Conversión por FPS \n	-r	Conversión por resolucion \n	-rf	Conversión por FPS y resolucion (Híbrido) \n	-c	Conversion por codec\n	-g	Conversion por GOP\n	-i	Conversion por entrelazado y resolucion (Híbrido) \n	-all	Todas las conversiones	\n	-none	Solo coge los datos del video original y los guarda en la DB')
 	print ('\npython GenerateCopies.py <NombreArchivoVideo> <párametro>\n')
 	quit()
 
@@ -48,7 +52,8 @@ flagmap = {	"-f": 1,
 			"-c": 8,
 			"-g": 16,
 			"-i": 32,
-			"-all": 63}
+			"-all": 63,
+			"-none": 0}
 	
 flag = flagmap[str(sys.argv[2])]
 	
@@ -78,9 +83,12 @@ videoOriginal = getVideoData(InputFileName)
 
 # Añadimos el path
 videoOriginal["path"] = ServerPath + InputFileName
-	
+videoOriginal["original"] = "0"
+
 mongo_insert(videoOriginal)
-	
+
+original = mongo_getId(videoOriginal)
+
 # Generación de videos por fps
 # Las llamadas a comandos externos son secuenciales, lo cual facilita un poco el proceso
 if flag & 1:
@@ -98,6 +106,8 @@ if flag & 1:
 		videoActual["path"] = ServerPath + OutputFileNameFPS
 		videoActual["framerate"] = e;
 		videoActual["bitrate"] = getBitRate(OutputFileNameFPS);
+		videoActual["original"] = original;
+		
 		mongo_insert(videoActual)
 	
 # Generacion de videos por resolucion
@@ -130,7 +140,8 @@ if flag & 2:
 		videoActual["resolucionH"] = resolucionH_actual;
 		videoActual["resolucionV"] = resolucionV_actual;
 		videoActual["bitrate"] = getBitRate(OutputFileNameRes);
-				
+		videoActual["original"] = original;
+		
 		mongo_insert(videoActual)
 	
 # Generacion de videos por resolucion y FPS
@@ -167,6 +178,7 @@ if flag & 4:
 			videoActual["resolucionH"] = resolucionH_actual;
 			videoActual["resolucionV"] = resolucionV_actual;
 			videoActual["bitrate"] = getBitRate(OutputFileNameCombinado);
+			videoActual["original"] = original;
 			
 			mongo_insert(videoActual)
 			
@@ -186,6 +198,7 @@ if flag & 8:
 		videoActual["path"] = ServerPath + OutputFileNameCodec
 		videoActual["codec"] = codec;
 		videoActual["bitrate"] = getBitRate(OutputFileNameCodec);
+		videoActual["original"] = original;
 		
 		mongo_insert(videoActual)
 	
@@ -205,6 +218,7 @@ if flag & 16:
 		videoActual["path"] = ServerPath + OutputFileNameGOP
 		videoActual["gop"] = GOP
 		videoActual["bitrate"] = getBitRate(OutputFileNameGOP);
+		videoActual["original"] = original;
 		
 		mongo_insert(videoActual)
 			
@@ -228,6 +242,7 @@ if flag & 32:
 		videoActual["resolucionH"] = resolucionH_actual;
 		videoActual["resolucionV"] = resolucionV_actual;
 		videoActual["bitrate"] = getBitRate(OutputFileNameInterlace);
+		videoActual["original"] = original;
 		
 		mongo_insert(videoActual)
 			

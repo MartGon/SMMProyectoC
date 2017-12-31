@@ -12,7 +12,8 @@ var pelicula = new Schema({
 							 codec: { type: String },
 							 bitrate: { type: Number },  // en kbps/s
 							 gop: { type: Number },  // Número imágenes entre dos I. O sea un número y solo uno.
-							 entrelazado: { type: Boolean }
+							 entrelazado: { type: Boolean },
+							 original: { type: String }
 						   });
 
 module.exports = mongoose.model('Pelicula', pelicula);

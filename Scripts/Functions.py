@@ -19,7 +19,6 @@ def getVideoData(InputFileName):
 	resultadoFPS = subprocess.check_output("ffprobe " + InputFileName + " -v error -show_entries stream=avg_frame_rate -of default=noprint_wrappers=1")
 	resultadoFPS_Splitted = str(resultadoFPS).split("avg_frame_rate=")
 	resultadoFPS_Dirty = resultadoFPS_Splitted[1]
-	print(resultadoFPS_Dirty)
 	resultadoFPS_Final = resultadoFPS_Dirty.replace("\\r\\n", "").replace("'", "")
 	if resultadoFPS_Final == '0/0':
 		resultadoFPS_Dirty = resultadoFPS_Splitted[2]
