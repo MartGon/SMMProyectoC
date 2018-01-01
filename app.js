@@ -6,8 +6,11 @@ var express  = require("express"),
     server   = http.createServer(app),
     mongoose = require('mongoose');
 	fs = require ('fs')
+	formidable = require('formidable'); 
+	MongoClient = require('mongodb').MongoClient;
+	url = 'mongodb://localhost:27017/peliculas';
 
-db = mongoose.createConnection('mongodb://localhost:27017/peliculas', function(err, res) 
+dbMongoose = mongoose.createConnection(url, function(err, res) 
  {
   if(err) 
     console.log('ERROR: connecting to Database. ' + err);
@@ -81,6 +84,81 @@ db = mongoose.createConnection('mongodb://localhost:27017/peliculas', function(e
              
             resp.end();
         });
+	});
+	
+	peliculas.post('/fileupload', function(req, res) 
+	{
+		var form = new formidable.IncomingForm();
+		
+		form.parse(req, function (err, fields, files)
+		{
+			var oldpath = files.filetoupload.path;
+			var newpath = "videos/"+files.filetoupload.name;
+			
+			if((fields.resolucionH * fields.resolucionV * fields.duracion * fields.framerate * fields.gop * fields.bitrate) == 0)
+			{
+				res.write('Algún parámetro del vídeo es inválido');
+				console.log('Algún parámetro del vídeo es inválido');
+				res.end();
+				return;
+			}
+			
+			var path = "videos/"
+			var peli = {}
+			peli["nombre"] = files.filetoupload.name;
+			peli["path"] = path + files.filetoupload.name;
+			peli["resolucionH"] = fields.resolucionH
+			peli["resolucionV"] = fields.resolucionV
+			peli["duracion"] = fields.duracion
+			peli["framerate"] = fields.framerate
+			peli["codec"] = fields.codec
+			peli["bitrate"] = fields.bitrate
+			peli["gop"] = fields.gop
+			peli["entrelazado"] = fields.entrelazado
+			peli["original"] = 0
+			
+			// Guardamos el archivo
+			fs.rename(oldpath, newpath, function(err)
+			{
+				if (err) throw err;
+			});
+			
+			MongoClient.connect(url, function(err, db) 
+			{
+				console.log("connecting db");
+				if (err) throw err;
+				
+				console.log("finding peli " + JSON.stringify(peli));
+				db.collection("peliculas").findOne(peli,function(err, pelicula)
+				{
+					if (err) throw err;
+					console.log("Contestando todas las pelis:");
+					console.log(pelicula);
+					
+					if(pelicula == null)
+					{
+						console.log("peli not found");
+						db.collection("peliculas").insertOne(peli, function(err) 
+						{
+							if (err) throw err;
+							res.write('File uploaded and moved!');
+							res.end();
+							console.log(peli)
+							db.close();
+						});
+
+					}
+					else
+					{
+						res.write('File already exists on the servers database');
+						res.end();
+					}
+
+				});
+				
+			});
+			
+		});
 	});
 	
 	// API routes

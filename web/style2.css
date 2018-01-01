@@ -4,6 +4,7 @@ body{
 }
 
 fieldset{
+	margin-top: 10px;
 	outline-style: outset;
 }
 
@@ -60,4 +61,22 @@ fieldset{
 	width: 100%;
 	margin: 0 auto;
 	margin-bottom: 40px;
+}
+
+.upload-vid{
+	
+	text-align: center;
+	align = center;
+	max-width: 640px;
+	width: 100%;
+	margin: 0 auto;
+	margin-bottom: 40px;
+	outline-style: outset;
+}
+
+.select-upload-vid{
+	align = center;
+	margin: 0 auto;
+	margin-bottom: 20px;
+	margin-top: 10px;
 }

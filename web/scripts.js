@@ -63,6 +63,7 @@ function printAvailableVideos(peliculas)
 		var replicas = getReplicasByOriginal(originales[i],peliculas)
 		
 		writeToVideoMenuDiv("<div><h3>" + originales[i]["nombre"] + "</h3>\n")
+		addLoadingVideoButton(originales[i])
 		
 		// Para cada categoria
 		for (var categoria in originales[i])
@@ -121,6 +122,11 @@ function writeToVideoMenuDiv(str)
 function doWriteToMenuDiv()
 {
 	document.getElementById("video-menu-div").innerHTML = strToWrite
+}
+
+function writeSelectTag(originales)
+{
+	
 }
 
 function addLoadingVideoButton(video)

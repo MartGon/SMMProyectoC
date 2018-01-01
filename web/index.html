@@ -28,6 +28,57 @@
 		<button class="load-movies-button" type="submit" onclick="getPeliculasFromServer()">Cargar peliculas</button>
 	</div>
 	
+	<div class="upload-vid">
+	<h2>Sube tu réplica del video</h2>
+		<form action="fileupload" method="post" enctype="multipart/form-data">
+			<input type="file" name="filetoupload"><br>
+			
+			<p> Elija el video del cual va a subir una réplica </p>
+			<select name="nombreOriginal" class="select-upload-vid">
+			 <option value="crab.mp4">crab.mp4</option>
+			 <option value="akiyo.y4m">akiyo.y4m</option>
+			 <option value="none">Ninguno de los anteriores</option>
+			</select>
+			
+			<p> Elija el framerate de este vídeo </p>
+			<input type="number" name="framerate" value="0"><br>
+			
+			<p> Elija la resolución horizontal del vídeo </p>
+			<input type="number" name="resolucionH" value="0"><br>
+			
+			<p> Elija la resolución vertical del vídeo </p>
+			<input type="number" name="resolucionV" value="0"><br>
+			
+			<p> Elija la duracion del vídeo </p>
+			<input type="number" name="duracion" value="0"><br>
+			
+			<p> Elija el bitrate del vídeo </p>
+			<input type="number" name="bitrate" value="0"><br>
+			
+			<p> Elija el códec del vídeo </p>
+			<select name="codec" class="select-upload-vid">
+			 <option value="h264">h264</option>
+			 <option value="vp9">vp9</option>
+			 <option value="wmv2">wmv2</option>
+			 <option value="theora">theora</option>
+			 <option value="hevc">hevc</option>
+			 <option value="vp8">vp8</option>
+			 <option value="mpeg2video">mpeg2video</option>
+			 <option value="asv2">asv2</option>
+			 <option value="none">Ninguno de los anteriores</option>
+			</select>
+			
+			<p> Elija el gop </p>
+			<input type="number" name="gop" value="0"><br><br>
+			
+			Entrelazado
+			<input type="checkbox" name="entrelazado" value="0"><br>
+			
+			<br/>
+			<input type="submit">
+		</form>
+	</div>
+	
 	<div class="log-div">
 		<h2>Respuesta de la API (LOG)</h2>
 		
@@ -35,7 +86,8 @@
 			<textarea id="answer" class="answer">	</textarea>
 		</div>
 	</div>
-		
+	
+
 	<!--<script>getPeliculasFromServer();</script>-->
 	
 	
