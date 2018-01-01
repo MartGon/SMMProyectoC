@@ -1,6 +1,7 @@
 
 var strToWrite = ""
 var videoURL = "http://127.0.0.1:8080/"
+var peliculasGlobal
 
 function getOriginales(peliculas)
 {
@@ -54,6 +55,7 @@ function printAvailableVideos(peliculas)
 	//var peliculas = getPeliculasFromServer()
 	addLineToLog(peliculas[0]["nombre"])
 	var originales = getOriginales(peliculas)
+	peliculasGlobal = peliculas;
 	resetVideoMenuDiv()
 	
 	// Para cada original
@@ -183,4 +185,46 @@ function getPeliculasFromServer()
 	});
 
 	return peliculas
+}
+	
+	var imageAddr = "http://seasonlegion.ddns.net:/wallpaper.jpg";
+	var startTime, endTime;
+	var downloadSize = 395000;
+	var download = new Image();
+
+function testConnection()
+{
+	download.onload = function () {
+		endTime = (new Date()).getTime();
+		showResults();
+	}
+	
+	startTime = (new Date()).getTime();
+	download.src = imageAddr;
+}
+
+function showResults() 
+{
+    var duration = (endTime - startTime) / 1000;
+    var bitsLoaded = downloadSize * 8;
+	var speedBps = bitsLoaded / duration
+    var speedKbps = (speedBps / 1024).toFixed(2);
+	
+	var peliculas = peliculasGlobal
+	
+	if (peliculas == null)
+	{
+		alert("¡Carga las pelis primero!");
+		return
+	}
+	
+	var mejorPeli = peliculas[0]
+	
+	for(var i = 0; i < peliculas.length; i++)
+	{
+		if (mejorPeli["bitrate"] < peliculas[i]["bitrate"] && peliculas[i]["bitrate"] < speedKbps)
+			mejorPeli = peliculas[i]
+	}
+	
+    alert("Te recomendadmos " + mejorPeli["nombre"]);
 }

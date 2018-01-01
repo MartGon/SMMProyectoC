@@ -28,6 +28,10 @@
 		<button class="load-movies-button" type="submit" onclick="getPeliculasFromServer()">Cargar peliculas</button>
 	</div>
 	
+	<div class="vid-recommend">
+		<button class="load-movies-button" type="submit" onclick="testConnection()">Recomiendame un video</button>
+	</div>
+	
 	<div class="upload-vid">
 	<h2>Sube tu réplica del video</h2>
 		<form action="fileupload" method="post" enctype="multipart/form-data">
@@ -35,9 +39,9 @@
 			
 			<p> Elija el video del cual va a subir una réplica </p>
 			<select name="nombreOriginal" class="select-upload-vid">
+			 <option value="none">Ninguno de los otros</option>
 			 <option value="crab.mp4">crab.mp4</option>
 			 <option value="akiyo.y4m">akiyo.y4m</option>
-			 <option value="none">Ninguno de los anteriores</option>
 			</select>
 			
 			<p> Elija el framerate de este vídeo </p>
@@ -57,6 +61,7 @@
 			
 			<p> Elija el códec del vídeo </p>
 			<select name="codec" class="select-upload-vid">
+			 <option value="none">Ninguno de los otros</option>
 			 <option value="h264">h264</option>
 			 <option value="vp9">vp9</option>
 			 <option value="wmv2">wmv2</option>
@@ -65,7 +70,6 @@
 			 <option value="vp8">vp8</option>
 			 <option value="mpeg2video">mpeg2video</option>
 			 <option value="asv2">asv2</option>
-			 <option value="none">Ninguno de los anteriores</option>
 			</select>
 			
 			<p> Elija el gop </p>

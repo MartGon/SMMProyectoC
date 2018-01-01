@@ -95,7 +95,7 @@ dbMongoose = mongoose.createConnection(url, function(err, res)
 			var oldpath = files.filetoupload.path;
 			var newpath = "videos/"+files.filetoupload.name;
 			
-			if((fields.resolucionH * fields.resolucionV * fields.duracion * fields.framerate * fields.gop * fields.bitrate) == 0)
+			if((fields.resolucionH * fields.resolucionV * fields.duracion * fields.framerate * fields.gop * fields.bitrate) == 0 || (codec = "none"))
 			{
 				res.write('Algún parámetro del vídeo es inválido');
 				console.log('Algún parámetro del vídeo es inválido');
