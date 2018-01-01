@@ -8,12 +8,6 @@ var url = 'mongodb://localhost:27017/peliculas';
 exports.findAllTVShows = function(req, res) 
 {
 	console.log('GET /peliculas')
-	/* TVShow.find(function(err, peliculas) 
-	{
-		console.log('GET /peliculas; Inside find')
-		if(err) res.send(400, err.message);
-		res.status(200).jsonp(peliculas);
-	}); */
 	
 	MongoClient.connect(url, function(err, db) 
 	{
@@ -78,19 +72,7 @@ exports.addTVShow = function(req, res) {
 	}); 
 	
 	res.status(200).send({result: "Success"});
-	/*
-	tvshow.save(function(err, tvshow) 
-	{
-		if(err) 
-		{
-			Console.log('There were some errors')
-			return res.send(500, err.message);
-		}	
-			
-		res.status(200).jsonp(tvshow);
-		Console.log('Saved sucessfully')
-	});
-	*/
+
 };
 
 //PUT - Update a register already exists

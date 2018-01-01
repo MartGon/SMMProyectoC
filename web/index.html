@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <title>Códecs a la carta</title>
+    <link rel="stylesheet" type="text/css" href="web/style2.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="web/scripts.js"></script> 
+    <link rel="icon" type="image/gif" href="/favicon.gif"/>
+    <link rel="shortcut" type="image/gif" href="/favicon.gif"/>
+    <meta charset="utf-8">
+  </head>
+  
+  <body>
+   <div class="main-header">
+	   <h3 class="main-header">Códecs a la carta</h3>
+	   <!--<h4 class="main-header">Selecciona una:</h4>-->
+   </div>
+   
+
+	<video id="video-player" width="640" height="480" class="video-player" controls>
+	  <source src="http://127.0.0.1:8080/videos/crab.mp4" type="video/mp4">
+	</video>
+
+
+   <div id="video-menu-div">
+   </div>
+	
+	<div class="load-movies-button-wrapper">
+		<button class="load-movies-button" type="submit" onclick="getPeliculasFromServer()">Cargar peliculas</button>
+	</div>
+	
+	<div class="log-div">
+		<h2>Respuesta de la API (LOG)</h2>
+		
+		<div class="text-area-div">
+			<textarea id="answer" class="answer">	</textarea>
+		</div>
+	</div>
+		
+	<!--<script>getPeliculasFromServer();</script>-->
+	
+	
+  </body>
+</html>
