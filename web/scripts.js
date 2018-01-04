@@ -135,8 +135,8 @@ function addLoadingVideoButton(video)
 {
 	str = "<button type='submit' onclick=\"var videoPlayer = document.getElementById('video-player');";
 	str+= "var source = document.createElement('source');"
-	str+="videoPlayer.pause();source.setAttribute('src','"+ videoURL + video["path"] + "');	videoPlayer.innerHTML='';videoPlayer.appendChild(source);videoPlayer.load();videoPlayer.width =" + video["resolucionH"]+ ";videoPlayer.height =" + video["resolucionV"]+ ";\">Cargar video</button>  "
-	console.log(videoURL + video["path"]);
+	str+="videoPlayer.pause();source.setAttribute('src','"+ /*videoURL +*/ video["path"] + "');	videoPlayer.innerHTML='';videoPlayer.appendChild(source);videoPlayer.load();videoPlayer.width =" + video["resolucionH"]+ ";videoPlayer.height =" + video["resolucionV"]+ ";\">Cargar video</button>  "
+	console.log(/*videoURL*/ + video["path"]);
 	console.log(str)
 	writeToVideoMenuDiv(str)
 }
@@ -224,6 +224,8 @@ function showResults()
 	{
 		if (mejorPeli["bitrate"] < peliculas[i]["bitrate"] && peliculas[i]["bitrate"] < speedKbps)
 			mejorPeli = peliculas[i]
+		
+		console.log("se ha comparado " + mejorPeli["bitrate"] + " con " + peliculas[i]["bitrate"] + " y con el BW" + speedKbps) 
 	}
 	
     alert("Te recomendadmos " + mejorPeli["nombre"]);

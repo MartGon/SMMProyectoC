@@ -95,7 +95,7 @@ dbMongoose = mongoose.createConnection(url, function(err, res)
 			var oldpath = files.filetoupload.path;
 			var newpath = "videos/"+files.filetoupload.name;
 			
-			if((fields.resolucionH * fields.resolucionV * fields.duracion * fields.framerate * fields.gop * fields.bitrate) == 0 || (codec = "none"))
+			if((fields.resolucionH * fields.resolucionV * fields.duracion * fields.framerate * fields.gop * fields.bitrate) == 0 )
 			{
 				res.write('Algún parámetro del vídeo es inválido');
 				console.log('Algún parámetro del vídeo es inválido');
@@ -120,7 +120,7 @@ dbMongoose = mongoose.createConnection(url, function(err, res)
 			// Guardamos el archivo
 			fs.rename(oldpath, newpath, function(err)
 			{
-				if (err) throw err;
+				if (err) console.log("Operation not permitted");
 			});
 			
 			MongoClient.connect(url, function(err, db) 
