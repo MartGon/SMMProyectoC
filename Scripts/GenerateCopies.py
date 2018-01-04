@@ -10,6 +10,7 @@ import subprocess
 import pymongo
 import copy
 import os.path
+import ntpath
 
 from Functions import getVideoData
 from Functions import getConfData
@@ -74,16 +75,20 @@ collection = db.peliculas
 
 # Formateo del nombre
 FileNameSplitted = sys.argv[1].split(".")
-FileName = FileNameSplitted[0]
-FileExt = "." + FileNameSplitted[1]
-InputFileName = FileName + FileExt
+#FileName = FileNameSplitted[0]
+#FileExt = "." + FileNameSplitted[1]
+FileExt = os.path.splitext(sys.argv[1])[1]
+FileName = ntpath.basename(sys.argv[1]).replace(FileExt, "")
+FileDirectory = os.path.splitext(sys.argv[1])[0].replace(FileName, "")
+InputFileName = FileDirectory + FileName + FileExt
 
 # Cogemos los datos del video
 videoOriginal = getVideoData(InputFileName)
 
 # Añadimos el path
-videoOriginal["path"] = ServerPath + InputFileName
+videoOriginal["path"] = ServerPath + FileName + FileExt
 videoOriginal["original"] = "0"
+videoOriginal["nombre"] = FileName + FileExt
 
 mongo_insert(videoOriginal)
 

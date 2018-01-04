@@ -82,7 +82,7 @@ def getVideoData(InputFileName):
 
 def getConfData():
 	
-	file = open("GenerateCopies.conf", "r")
+	file = open(os.path.join(sys.path[0], "GenerateCopies.conf"), "r")
 	conf = dict()
 	
 	conf["FrameList"] = []
