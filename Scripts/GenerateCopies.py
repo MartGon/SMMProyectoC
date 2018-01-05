@@ -136,7 +136,7 @@ if flag & 2:
 		OutputFileNameRes = FileName + "_" + str(resolucionH_actual) + "x" + str(resolucionV_actual) + FileExt
 		
 		if os.path.isfile(OutputFileNameRes) is not True: 
-			os.system("ffmpeg -i " + InputFileName + " -vf scale=" + str(resolucionH_actual) + ":" + str(resolucionV_actual) + " " + OutputFileNameRes)
+			os.system("ffmpeg -i " + InputFileName + " -strict -2 -vf scale=" + str(resolucionH_actual) + ":" + str(resolucionV_actual) + " " + OutputFileNameRes)
 		
 		# Preparamos la inserccion en la base de datos
 		videoActual = copy.deepcopy(videoOriginal)
@@ -173,7 +173,7 @@ if flag & 4:
 		
 			# Si no existe lo creamos
 			if os.path.isfile(OutputFileNameCombinado) is not True: 
-				os.system("ffmpeg -i " + InputFileName + " -vf scale=" + str(resolucionH_actual) + ":" + str(resolucionV_actual) + " " + " -r " + FPS + " " + OutputFileNameCombinado)
+				os.system("ffmpeg -i " + InputFileName + " -strict -2 -vf scale=" + str(resolucionH_actual) + ":" + str(resolucionV_actual) + " " + " -r " + FPS + " " + OutputFileNameCombinado)
 			
 			# Preparamos la inserccion en la base de datos
 			videoActual = copy.deepcopy(videoOriginal)
@@ -195,7 +195,7 @@ if flag & 8:
 		
 		# Si existe pasamos de lo demas
 		if os.path.isfile(OutputFileNameCodec) is not True: 
-			os.system("ffmpeg -i " + InputFileName + " -c:v " + codec + " -c:a libvorbis " + OutputFileNameCodec)
+			os.system("ffmpeg -i " + InputFileName + " -strict -2 -c:v " + codec + " -c:a libvorbis " + OutputFileNameCodec)
 		
 		# Preparamos la inserccion en la base de datos
 		videoActual = copy.deepcopy(videoOriginal)
@@ -215,7 +215,7 @@ if flag & 16:
 		
 		# Si existe pasamos de lo demas
 		if os.path.isfile(OutputFileNameGOP) is not True: 
-			os.system("ffmpeg -i " + InputFileName + " -g " + str(GOP) + " " + OutputFileNameGOP)
+			os.system("ffmpeg -i " + InputFileName + " -strict -2 -g " + str(GOP) + " " + OutputFileNameGOP)
 		
 		# Preparamos la inserccion en la base de datos
 		videoActual = copy.deepcopy(videoOriginal)
@@ -237,7 +237,7 @@ if flag & 32:
 		
 		# Si existe pasamos de lo demas
 		if os.path.isfile(OutputFileNameInterlace) is not True: 
-			os.system("ffmpeg -i " + InputFileName + " -vf tinterlace=5:flags=low_pass_filter -vf scale=" + str(resolucionH_actual) + ":" + str(resolucionV_actual) + " " + OutputFileNameInterlace)
+			os.system("ffmpeg -i " + InputFileName + " -strict -2 -vf tinterlace=5:flags=low_pass_filter -vf scale=" + str(resolucionH_actual) + ":" + str(resolucionV_actual) + " " + OutputFileNameInterlace)
 		
 		# Preparamos la inserccion en la base de datos
 		videoActual = copy.deepcopy(videoOriginal)
