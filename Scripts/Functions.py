@@ -16,47 +16,49 @@ def getVideoData(InputFileName):
 	video["nombre"] = InputFileName
 		# Cogemos los datos del video
 		# Cogemos los FPS iniciales
-	resultadoFPS = subprocess.check_output("ffprobe " + InputFileName + " -v error -show_entries stream=avg_frame_rate -of default=noprint_wrappers=1")
+
+	resultadoFPS = subprocess.check_output("ffprobe " + InputFileName + " -v error -show_entries stream=avg_frame_rate -of default=noprint_wrappers=1", shell=True)
 	resultadoFPS_Splitted = str(resultadoFPS).split("avg_frame_rate=")
 	resultadoFPS_Dirty = resultadoFPS_Splitted[1]
 	resultadoFPS_Final = resultadoFPS_Dirty.replace("\\r\\n", "").replace("'", "")
-	if resultadoFPS_Final == '0/0':
+
+	if resultadoFPS_Final.strip() == '0/0':
 		resultadoFPS_Dirty = resultadoFPS_Splitted[2]
 		resultadoFPS_Final = resultadoFPS_Dirty.replace("\\r\\n", "").replace("'", "")
 
 	if "/" in resultadoFPS_Final:
-		resultadoFPS_Simplificado = round(int(resultadoFPS_Final.split("/")[0]) / int(resultadoFPS_Final.split("/")[1]))
+		resultadoFPS_Simplificado = int(round(int(resultadoFPS_Final.split("/")[0]) / int(resultadoFPS_Final.split("/")[1])))
 	else:
-		resultadoFPS_Simplificado = resultadoFPS_Final
+		resultadoFPS_Simplificado = int(resultadoFPS_Final)
 	
 	video["framerate"] = resultadoFPS_Simplificado
 
 		# Cogemos la resolucion Horizontal
-	resultadoResolucionH = subprocess.check_output("ffprobe " + InputFileName + " -v error -of flat=s=_ -select_streams v:0 -show_entries stream=width")
+	resultadoResolucionH = subprocess.check_output("ffprobe " + InputFileName + " -v error -of flat=s=_ -select_streams v:0 -show_entries stream=width", shell=True)
 	resultadoResolucionH_Final = int(str(resultadoResolucionH).replace("streams_stream_0_width=", "").replace("b'","").replace("\\r\\n'", ""))
 	
 	video["resolucionH"] = resultadoResolucionH_Final
 
 		# Cogemos la resolucion Vertical
-	resultadoResolucionV = subprocess.check_output("ffprobe " + InputFileName + " -v error -of flat=s=_ -select_streams v:0 -show_entries stream=height")
+	resultadoResolucionV = subprocess.check_output("ffprobe " + InputFileName + " -v error -of flat=s=_ -select_streams v:0 -show_entries stream=height", shell=True)
 	resultadoResolucionV_Final = int(str(resultadoResolucionV).replace("streams_stream_0_height=", "").replace("b'","").replace("\\r\\n'", ""))
 	
 	video["resolucionV"] = resultadoResolucionV_Final
 
 		# Cogemos la duracion
-	resultadoDuracion = subprocess.check_output("ffprobe " + InputFileName + " -v error -show_entries format=duration -of default=noprint_wrappers=1")
+	resultadoDuracion = subprocess.check_output("ffprobe " + InputFileName + " -v error -show_entries format=duration -of default=noprint_wrappers=1", shell=True)
 	resultadoDuracion_Final = float(str(resultadoDuracion).replace("duration=", "").replace("b'","").replace("\\r\\n'", ""))
 	
 	video["duracion"] = resultadoDuracion_Final
 
 		# Cogemos el bitrate
-	resultadoBitrate = subprocess.check_output("ffprobe " + InputFileName + " -v error -show_entries format=bit_rate -of default=noprint_wrappers=1")
+	resultadoBitrate = subprocess.check_output("ffprobe " + InputFileName + " -v error -show_entries format=bit_rate -of default=noprint_wrappers=1", shell=True)
 	resultadoBitrate_Final = round(int(str(resultadoBitrate).replace("bit_rate=", "").replace("b'","").replace("\\r\\n'", ""))/1000)
 	
 	video["bitrate"] = resultadoBitrate_Final
 
 		# Cogemos el codec
-	resultadoCodec = subprocess.check_output("ffprobe " + InputFileName + " -v error -show_entries stream=codec_name -of default=noprint_wrappers=1")
+	resultadoCodec = subprocess.check_output("ffprobe " + InputFileName + " -v error -show_entries stream=codec_name -of default=noprint_wrappers=1", shell=True)
 	resultadoCodec_Final = str(resultadoCodec).replace("codec_name=", "").replace("b","").replace("\\r\\n", "").replace("'", "").replace("aac", "")
 
 	video["codec"] = resultadoCodec_Final
@@ -64,7 +66,7 @@ def getVideoData(InputFileName):
 		# Cogemos el GOP
 	resultadoGOP_Final = 0
 	if resultadoGOP_Final != -1:
-		resultadoGOP = subprocess.check_output("ffprobe -show_frames " + InputFileName)
+		resultadoGOP = subprocess.check_output("ffprobe -show_frames " + InputFileName, shell=True)
 		resultadoGOP_Array = str(resultadoGOP).split("pict_type=")
 
 		for e in resultadoGOP_Array:
@@ -135,7 +137,7 @@ def getConfData():
 
 def getBitRate(InputFileName):
 	# Cogemos el bitrate
-	resultadoBitrate = subprocess.check_output("ffprobe " + InputFileName + " -v error -show_entries format=bit_rate -of default=noprint_wrappers=1")
+	resultadoBitrate = subprocess.check_output("ffprobe " + InputFileName + " -v error -show_entries format=bit_rate -of default=noprint_wrappers=1", shell=True)
 	resultadoBitrate_Final = round(int(str(resultadoBitrate).replace("bit_rate=", "").replace("b'","").replace("\\r\\n'", ""))/1000)
 	
 	return resultadoBitrate_Final

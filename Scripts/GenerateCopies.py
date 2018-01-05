@@ -79,7 +79,7 @@ FileNameSplitted = sys.argv[1].split(".")
 #FileExt = "." + FileNameSplitted[1]
 FileExt = os.path.splitext(sys.argv[1])[1]
 FileName = ntpath.basename(sys.argv[1]).replace(FileExt, "")
-FileDirectory = os.path.splitext(sys.argv[1])[0].replace(FileName, "")
+FileDirectory = os.path.abspath(sys.argv[1]).replace(FileName, "").replace(FileExt, "")
 InputFileName = FileDirectory + FileName + FileExt
 
 # Cogemos los datos del video
@@ -103,7 +103,7 @@ if flag & 1:
 		
 		# Si existe pasamos de lo demas
 		if os.path.isfile(OutputFileNameFPS) is not True: 
-			os.system("ffmpeg -i " + InputFileName + " -r " + FPS + " -y " + OutputFileNameFPS)
+			os.system("ffmpeg -i " + InputFileName + " -r " + FPS + " -strict -2 -y " + OutputFileNameFPS)
 		
 		# Preparamos la inserccion en la base de datos
 		videoActual = copy.deepcopy(videoOriginal)
