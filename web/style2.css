@@ -16,6 +16,45 @@ fieldset{
   text-align: center;
 }
 
+.floating-box {
+    float: left;
+    width: auto;
+    height: auto;
+    margin-top: 20px;
+	margin-bottom: 20px;
+	margin-left: 20px;
+	margin-right:20px;
+	text-align: center;
+    border: 3px solid #73AD21;
+	padding-left:10px;
+	padding-right:10px;
+	padding-top:10px;
+	padding-bottom:10px
+}
+
+.video-name{
+	text-align: center;
+	background: purple;
+	color: white;
+}
+
+.category-header{
+	text-align: center;
+	color: white;
+	background-color: black;
+}
+
+.video-header{
+	text-align: center;
+	color: white;
+	background-color: blue;
+	
+}
+
+.video-header-div{
+	text-align:center;
+}
+
 .video-player{
 	display:block; 
 	margin: 0 auto;
@@ -76,6 +115,8 @@ fieldset{
 	margin: 0 auto;
 	margin-bottom: 40px;
 	outline-style: outset;
+	padding-top:20px;
+	padding-bottom:20px;
 }
 
 .select-upload-vid{
