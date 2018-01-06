@@ -98,6 +98,7 @@ function printVideosByCategoria(replicas, categoria)
 	{
 		writeToVideoMenuDiv("<p>"+replicas[i]["nombre"]+"</p>")
 		addLoadingVideoButton(replicas[i])
+		addCopyToClipboardButton(replicas[i])
 	}
 	writeToVideoMenuDiv("</fieldset></fieldset>")
 
@@ -145,9 +146,24 @@ function addLoadingVideoButton(video)
 	str = "<button type='submit' onclick=\"var videoPlayer = document.getElementById('video-player');";
 	str+= "var source = document.createElement('source');"
 	str+="videoPlayer.pause();source.setAttribute('src','"+ /*videoURL +*/ video["path"] + "');	videoPlayer.innerHTML='';videoPlayer.appendChild(source);videoPlayer.load();videoPlayer.width =" + video["resolucionH"]+ ";videoPlayer.height =" + video["resolucionV"]+ ";\">Cargar video</button>  "
-	console.log(/*videoURL*/ + video["path"]);
-	console.log(str)
+	//console.log(/*videoURL*/ + video["path"]);
+	//console.log(str)
 	writeToVideoMenuDiv(str)
+}
+
+function addCopyToClipboardButton(video)
+{
+	str = 'Enlace: <input type="text" value=' + video["path"] + ' id=' + video["nombre"] + '>'
+	str += '<button onclick="copyUrlToClipboard(\'' + video["nombre"] + '\')">Copiar link</button>'
+	writeToVideoMenuDiv(str)
+}
+
+function copyUrlToClipboard(id)
+{
+	var copyText = document.getElementById(id);
+	copyText.select();
+	document.execCommand("Copy");
+	alert("Copiado el siguiente enlace: " + copyText.value);
 }
 
 function callbacked(pelis)
