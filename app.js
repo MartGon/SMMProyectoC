@@ -197,13 +197,44 @@ dbMongoose = mongoose.createConnection(url, function(err, res)
 					console.log("connecting db");
 					if (err) throw err;
 					
-					var query = { nombre: fields.nombreOriginal }
-					db.collection("peliculas").findOne(query,function(err, pelicula)
+					if(fields.nombreOriginal != "none")
 					{
-						console.log("Buscando versión original");
-						peli["original"] = pelicula["_id"];
-						
-						console.log("finding peli " + JSON.stringify(peli));
+						var query = { nombre: fields.nombreOriginal }
+						db.collection("peliculas").findOne(query,function(err, pelicula)
+						{
+							console.log("Buscando versión original");
+							peli["original"] = pelicula["_id"];
+							
+							console.log("finding peli " + JSON.stringify(peli));
+							db.collection("peliculas").findOne(peli,function(err, pelicula)
+							{
+								if (err) throw err;
+								
+								// En caso de que no exista ya, la guardamos
+								if(pelicula == null)
+								{
+									console.log("peli not found");
+									db.collection("peliculas").insertOne(peli, function(err) 
+									{
+										if (err) throw err;
+										res.write('File uploaded and moved!');
+										res.end();
+										console.log(peli)
+										db.close();
+									});
+
+								}
+								else
+								{
+									res.write('File already exists on the servers database');
+									res.end();
+								}
+
+							});
+						});
+					}
+					else
+					{
 						db.collection("peliculas").findOne(peli,function(err, pelicula)
 						{
 							if (err) throw err;
@@ -227,10 +258,8 @@ dbMongoose = mongoose.createConnection(url, function(err, res)
 								res.write('File already exists on the servers database');
 								res.end();
 							}
-
 						});
-					});
-					
+					}
 				});
 			}	
 			
