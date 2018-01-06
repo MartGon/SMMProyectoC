@@ -55,8 +55,10 @@ function printAvailableVideos(peliculas)
 	//var peliculas = getPeliculasFromServer()
 	addLineToLog(peliculas[0]["nombre"])
 	var originales = getOriginales(peliculas)
+	
 	peliculasGlobal = peliculas;
 	resetVideoMenuDiv()
+	writeSelectTag(originales)
 	
 	// Para cada original
 	for(var i = 0; i < originales.length; i++)
@@ -128,7 +130,14 @@ function doWriteToMenuDiv()
 
 function writeSelectTag(originales)
 {
+	var str = '<option value="none">Ninguno de los otros</option>'
 	
+	for(var i = 0; i < originales.length; i++)
+	{
+		str+=  '<option value=' + originales[i]["nombre"] + '>' + originales[i]["nombre"] + '</option>'
+	}
+	
+	document.getElementById("select-upload-vid").innerHTML = str
 }
 
 function addLoadingVideoButton(video)
@@ -186,6 +195,8 @@ function getPeliculasFromServer()
 
 	return peliculas
 }
+	
+// 	Funciones relacionadas con el cáluclo de ancho de banda y recomendación	
 	
 	var imageAddr = "http://seasonlegion.ddns.net:/wallpaper.jpg";
 	var startTime, endTime;

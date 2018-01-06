@@ -38,10 +38,8 @@
 			<input type="file" name="filetoupload"><br>
 			
 			<p> Elija el video del cual va a subir una réplica </p>
-			<select name="nombreOriginal" class="select-upload-vid">
+			<select name="nombreOriginal" id="select-upload-vid">
 			 <option value="none">Ninguno de los otros</option>
-			 <option value="crab.mp4">crab.mp4</option>
-			 <option value="akiyo.y4m">akiyo.y4m</option>
 			</select>
 			
 			<p> Elija el framerate de este vídeo </p>
@@ -75,8 +73,11 @@
 			<p> Elija el gop </p>
 			<input type="number" name="gop" value="0"><br><br>
 			
-			Entrelazado
-			<input type="checkbox" name="entrelazado" value="0"><br>
+			<p>Entrelazado</p>
+			<input type="checkbox" name="entrelazado"><br>
+			
+			<p>Obtener datos del lado del servidor (Ignorar lo establecido previamente)</p>
+			<input type="checkbox" name="serverCheck"><br>
 			
 			<br/>
 			<input type="submit">

@@ -8,6 +8,7 @@ var express  = require("express"),
 	fs = require ('fs')
 	formidable = require('formidable'); 
 	MongoClient = require('mongodb').MongoClient;
+	spawn = require("child_process").spawn;
 	url = 'mongodb://localhost:27017/peliculas';
 
 dbMongoose = mongoose.createConnection(url, function(err, res) 
@@ -19,12 +20,6 @@ dbMongoose = mongoose.createConnection(url, function(err, res)
 	app.use(bodyParser.urlencoded({ extended: false }));
 	app.use(bodyParser.json());
 	app.use(methodOverride());
-	/*app.use(function (req, res, next) 
-	{
-		res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000/peliculas');
-		// Request methods you wish to allow
-		res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-	});*/
 
 	// Import Models and controllers
 	var models     = require('./models/peliculas')(app, mongoose);
@@ -95,7 +90,7 @@ dbMongoose = mongoose.createConnection(url, function(err, res)
 			var oldpath = files.filetoupload.path;
 			var newpath = "videos/"+files.filetoupload.name;
 			
-			if((fields.resolucionH * fields.resolucionV * fields.duracion * fields.framerate * fields.gop * fields.bitrate) == 0 )
+			if((fields.resolucionH * fields.resolucionV * fields.duracion * fields.framerate * fields.gop * fields.bitrate) == 0  && fields.checkServer == 0)
 			{
 				res.write('Algún parámetro del vídeo es inválido');
 				console.log('Algún parámetro del vídeo es inválido');
@@ -103,60 +98,141 @@ dbMongoose = mongoose.createConnection(url, function(err, res)
 				return;
 			}
 			
-			var path = "videos/"
-			var peli = {}
-			peli["nombre"] = files.filetoupload.name;
-			peli["path"] = path + files.filetoupload.name;
-			peli["resolucionH"] = fields.resolucionH
-			peli["resolucionV"] = fields.resolucionV
-			peli["duracion"] = fields.duracion
-			peli["framerate"] = fields.framerate
-			peli["codec"] = fields.codec
-			peli["bitrate"] = fields.bitrate
-			peli["gop"] = fields.gop
-			peli["entrelazado"] = fields.entrelazado
-			peli["original"] = 0
-			
 			// Guardamos el archivo
 			fs.rename(oldpath, newpath, function(err)
 			{
-				if (err) console.log("Operation not permitted");
+				// Si se produce un error, es probable que el video ya exista
+				if (err)
+				{					
+					console.log("Operation not permitted, probaably the file already exists");
+					res.write('Ya existe un video con ese nombre');
+					res.end();
+				}
 			});
 			
-			MongoClient.connect(url, function(err, db) 
+			// Generamos los párametros nosotros
+			console.log(fields.serverCheck)
+			console.log(fields.nombreOriginal)
+			if (fields.serverCheck)
 			{
-				console.log("connecting db");
-				if (err) throw err;
+				var process = spawn('python',["Scripts/GenerateCopies.py", newpath, "-none"]);
 				
-				console.log("finding peli " + JSON.stringify(peli));
-				db.collection("peliculas").findOne(peli,function(err, pelicula)
+				process.stdout.on('data', function (data)
 				{
-					if (err) throw err;
-					console.log("Contestando todas las pelis:");
-					console.log(pelicula);
+					console.log("Añadido a la base de datos")
 					
-					if(pelicula == null)
+					MongoClient.connect(url, function(err, db) 
 					{
-						console.log("peli not found");
-						db.collection("peliculas").insertOne(peli, function(err) 
+						console.log("connecting db");
+						if (err) throw err;
+						
+						if(fields.nombreOriginal != "none")
 						{
-							if (err) throw err;
-							res.write('File uploaded and moved!');
+							var added;
+							var query = { nombre: files.filetoupload.name};
+							// Buscamos la añadida mediante el script
+							db.collection("peliculas").findOne(query,function(err, pelicula)
+							{
+								if (pelicula != null)
+									added = pelicula
+								else
+								{
+									console.log("No se encontró la peli subida por la script")
+									return;
+								}
+								query["nombre"] = fields.nombreOriginal;
+								
+								// Buscamos la original
+								db.collection("peliculas").findOne(query,function(err, pelicula)
+								{
+									console.log("Buscando versión original");
+									added["original"] = pelicula["_id"];
+									
+									query["nombre"] = files.filetoupload.name;
+									// Updateamos la añadida por la script
+									db.collection("peliculas").update(query, added, {assert: true},function(err, pelicula)
+									{
+										console.log("Updateando");
+										res.write('Copia subida con éxito');
+										res.end();
+									});
+								});
+							});
+							
+						}
+						else
+						{
+							res.write('Original file uploaded and moved!');
 							res.end();
-							console.log(peli)
-							db.close();
-						});
-
-					}
-					else
-					{
-						res.write('File already exists on the servers database');
-						res.end();
-					}
-
+						}
+						
+					});
 				});
 				
-			});
+				return;
+			}
+			// En caso contrario, nos fiamos del usuario
+			else
+			{
+				var path = "http://localhost:8080/videos/"
+				var peli = {}
+				peli["nombre"] = files.filetoupload.name;
+				peli["path"] = path + files.filetoupload.name;
+				peli["resolucionH"] = fields.resolucionH
+				peli["resolucionV"] = fields.resolucionV
+				peli["duracion"] = fields.duracion
+				peli["framerate"] = fields.framerate
+				peli["codec"] = fields.codec
+				peli["bitrate"] = fields.bitrate
+				peli["gop"] = fields.gop
+				if(fields.entrelazado)
+					peli["entrelazado"] = true;
+				else
+					peli["entrelazado"] = false;
+				peli["original"] = 0
+				
+				// Conectamos con la DB
+				MongoClient.connect(url, function(err, db) 
+				{
+					console.log("connecting db");
+					if (err) throw err;
+					
+					var query = { nombre: fields.nombreOriginal }
+					db.collection("peliculas").findOne(query,function(err, pelicula)
+					{
+						console.log("Buscando versión original");
+						peli["original"] = pelicula["_id"];
+						
+						console.log("finding peli " + JSON.stringify(peli));
+						db.collection("peliculas").findOne(peli,function(err, pelicula)
+						{
+							if (err) throw err;
+							
+							// En caso de que no exista ya, la guardamos
+							if(pelicula == null)
+							{
+								console.log("peli not found");
+								db.collection("peliculas").insertOne(peli, function(err) 
+								{
+									if (err) throw err;
+									res.write('File uploaded and moved!');
+									res.end();
+									console.log(peli)
+									db.close();
+								});
+
+							}
+							else
+							{
+								res.write('File already exists on the servers database');
+								res.end();
+							}
+
+						});
+					});
+					
+				});
+			}	
 			
 		});
 	});
