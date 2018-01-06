@@ -115,7 +115,11 @@ dbMongoose = mongoose.createConnection(url, function(err, res)
 			console.log(fields.nombreOriginal)
 			if (fields.serverCheck)
 			{
-				var process = spawn('python',["Scripts/GenerateCopies.py", newpath, "-none"]);
+				var process;
+				if(fields.nombreOriginal == "none")
+					process = spawn('python',["Scripts/GenerateCopies.py", newpath, fields.copies]);
+				else
+					process = spawn('python',["Scripts/GenerateCopies.py", newpath, "-none"]);
 				
 				process.stdout.on('data', function (data)
 				{

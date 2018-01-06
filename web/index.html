@@ -79,7 +79,19 @@
 			Obtener datos del lado del servidor (Ignorar lo establecido previamente)
 			<input type="checkbox" name="serverCheck"><br>
 			
-			<br/>
+			<p> Generar copias de este vídeo (Sólo si es un vídeo original) </p>
+			<select name="copies">
+			 <option value="none">Ninguno de los otros</option>
+			 <option value="-f">Por framerate</option>
+			 <option value="-r">Por resolucion</option>
+			 <option value="-rf">Por resolucion y framerate</option>
+			 <option value="-c">Por codec</option>
+			 <option value="-g">Por GOP</option>
+			 <option value="-i">Por entrelazado</option>
+			 <option value="-all">Por todos los anteriores</option>
+			</select>
+			
+			<br/><br>
 			<input type="submit">
 		</form>
 	</div>
