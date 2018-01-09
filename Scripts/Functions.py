@@ -128,6 +128,16 @@ def getConfData():
 			GOPs = line.strip().split(",")
 			for GOP in GOPs:
 				conf["GOPList"].append(GOP.strip())
+				
+		# Handling MongoDB
+		elif line.strip().startswith("MongoDB ="):
+			line = line.replace("MongoDB =", "").strip()
+			line = line.split(':')
+			conf["MongoDBPath"] = line[0]
+			if len(line) != 2:
+				conf["MongoDBPuerto"] = "27017"
+			else:
+				conf["MongoDBPuerto"] = line[1]
 	
 	file.close()
 	

@@ -64,7 +64,8 @@ print("El flag elegido es " + str(flag))
 # Abrimos la base de datos
 DBEnabled = True
 try:
-	client = MongoClient('localhost', 27017)
+	print(conf["MongoDBPath"] + ":" + int(conf["MongoDBPuerto"]))
+	client = MongoClient(conf["MongoDBPath"], int(conf["MongoDBPuerto"]))
 	client.server_info() 
 except pymongo.errors.ServerSelectionTimeoutError:
 	print("No se pudo conectar a la base de datos. \nSe harán las conversiones pero solo se guardaran los resultados tras volver a ejecutar con la DB activa")
