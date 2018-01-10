@@ -51,9 +51,9 @@ dbMongoose = mongoose.createConnection(url, function(err, res)
 	});
 	
 	
-	peliculas.get('/web/style2.css', function(req, resp) 
+	peliculas.get('/web/style.css', function(req, resp) 
 	{
-	  fs.readFile("web/style2.css", function (error, pgResp) {
+	  fs.readFile("web/style.css", function (error, pgResp) {
             if (error) {
                 resp.writeHead(404);
                 resp.write('Contents you are looking are Not Found');
