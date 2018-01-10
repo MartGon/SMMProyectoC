@@ -15,6 +15,7 @@ import ntpath
 from Functions import getVideoData
 from Functions import getConfData
 from Functions import getBitRate
+from Functions import getQualityValue
 
 from pymongo import MongoClient
 from copy import deepcopy
@@ -112,6 +113,7 @@ if flag & 1:
 		videoActual["framerate"] = e;
 		videoActual["bitrate"] = getBitRate(OutputFileNameFPS);
 		videoActual["original"] = original;
+		videoActual["calidad"] = getQualityValue(videoActual)
 		
 		mongo_insert(videoActual)
 	
@@ -146,6 +148,7 @@ if flag & 2:
 		videoActual["resolucionV"] = resolucionV_actual;
 		videoActual["bitrate"] = getBitRate(OutputFileNameRes);
 		videoActual["original"] = original;
+		videoActual["calidad"] = getQualityValue(videoActual)
 		
 		mongo_insert(videoActual)
 	
@@ -184,6 +187,7 @@ if flag & 4:
 			videoActual["resolucionV"] = resolucionV_actual;
 			videoActual["bitrate"] = getBitRate(OutputFileNameCombinado);
 			videoActual["original"] = original;
+			videoActual["calidad"] = getQualityValue(videoActual)
 			
 			mongo_insert(videoActual)
 			
@@ -204,6 +208,7 @@ if flag & 8:
 		videoActual["codec"] = codec;
 		videoActual["bitrate"] = getBitRate(OutputFileNameCodec);
 		videoActual["original"] = original;
+		videoActual["calidad"] = getQualityValue(videoActual)
 		
 		mongo_insert(videoActual)
 	
@@ -224,6 +229,7 @@ if flag & 16:
 		videoActual["gop"] = GOP
 		videoActual["bitrate"] = getBitRate(OutputFileNameGOP);
 		videoActual["original"] = original;
+		videoActual["calidad"] = getQualityValue(videoActual)
 		
 		mongo_insert(videoActual)
 			
@@ -248,6 +254,7 @@ if flag & 32:
 		videoActual["resolucionV"] = resolucionV_actual;
 		videoActual["bitrate"] = getBitRate(OutputFileNameInterlace);
 		videoActual["original"] = original;
+		videoActual["calidad"] = getQualityValue(videoActual)
 		
 		mongo_insert(videoActual)
 			

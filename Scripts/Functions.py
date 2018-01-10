@@ -78,6 +78,8 @@ def getVideoData(InputFileName):
 	
 	video["entrelazado"] = False
 	
+	video["calidad"] = getQualityValue(video)
+	
 	return video;
 
 def getConfData():
@@ -149,3 +151,27 @@ def getBitRate(InputFileName):
 	resultadoBitrate_Final = round(int(str(resultadoBitrate).replace("bit_rate=", "").replace("b'","").replace("\\r\\n'", ""))/1000)
 	
 	return resultadoBitrate_Final
+	
+def getQualityValue(VideoActual):
+	
+	codec=getCodecValue(VideoActual["codec"])
+	gop=1/int(VideoActual["gop"])
+	
+	if(VideoActual["entrelazado"]):
+		entrelazado=0
+	else:
+		entrelazado=1	
+	
+	return VideoActual["resolucionH"]*0.05+VideoActual["resolucionV"]*0.05+VideoActual["bitrate"]*0.24+VideoActual["framerate"]*0.14+codec*0.28+gop*0.24
+	
+def getCodecValue(codec):
+	return {
+		"hevc" : 8,
+		"vp9" : 8,
+		"h264": 6,
+		"vp8": 6,
+		"wmv2": 4,
+		"theora": 4,
+		"mpeg2video": 2,
+		"h261": 1
+	}.get(codec,1)

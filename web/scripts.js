@@ -112,6 +112,7 @@ function printVideosByCategoria(replicas, categoria)
 		writeToVideoMenuDiv("<p>GOP:	" + replicas[i]["gop"] + "</p>")
 		writeToVideoMenuDiv("<p>Codec:	" + replicas[i]["codec"] + "</p>")
 		writeToVideoMenuDiv("<p>Entrelazado:	" + replicas[i]["entrelazado"] + "</p>")
+		writeToVideoMenuDiv("<p style = 'color:red;'>Calidad: " + replicas[i]["calidad"] +  "</p>")
 		addLoadingVideoButton(replicas[i])
 		addCopyToClipboardButton(replicas[i])
 		writeToVideoMenuDiv('</div>')
@@ -167,8 +168,6 @@ function addLoadingVideoButton(video)
 	str = "<button type='submit' onclick=\"var videoPlayer = document.getElementById('video-player');";
 	str+= "var source = document.createElement('source');"
 	str+="videoPlayer.pause();source.setAttribute('src','"+ /*videoURL +*/ video["path"] + "');	videoPlayer.innerHTML='';videoPlayer.appendChild(source);videoPlayer.load();videoPlayer.width =" + video["resolucionH"]+ ";videoPlayer.height =" + video["resolucionV"] + ';document.body.scrollTop = document.documentElement.scrollTop = 0' + ";\">Cargar video</button>  "
-	//console.log(/*videoURL*/ + video["path"]);
-	//console.log(str)
 	writeToVideoMenuDiv(str)
 }
 
@@ -243,6 +242,7 @@ function getPeliculasFromServer()
 			   peli["gop"] = data[i].gop
 			   peli["entrelazado"] = data[i].entrelazado
 			   peli["original"] = data[i].original
+			   peli["calidad"] = Math.round(data[i].calidad)
 			   
 			   peliculas.push(peli)
 			   addLineToLog(peliculas[i]["nombre"])
