@@ -60,3 +60,4 @@ typings/
 # Nuestro directorios
 videos/
 MongoDB/
+Scripts/__pycache__/
