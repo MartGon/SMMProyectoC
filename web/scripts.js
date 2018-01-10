@@ -288,6 +288,7 @@ function showResults()
 	var speedBps = bitsLoaded / duration
     var speedKbps = (speedBps / 1024).toFixed(2);
 
+	var peliculas = peliculasGlobal
 	
 	var peliBitRateMasBajo = peliculas[0];
 	
