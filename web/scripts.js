@@ -260,11 +260,18 @@ function getPeliculasFromServer()
 	
 	var imageAddr = "http://seasonlegion.ddns.net:/wallpaper.jpg";
 	var startTime, endTime;
-	var downloadSize = 395000;
+	var downloadSize = 395000; // 400 KB
 	var download = new Image();
 
 function testConnection()
 {
+	
+	if (peliculasGlobal == null)
+	{
+		alert("¡Carga las pelis primero!");
+		return
+	}
+	
 	download.onload = function () {
 		endTime = (new Date()).getTime();
 		showResults();
@@ -280,16 +287,17 @@ function showResults()
     var bitsLoaded = downloadSize * 8;
 	var speedBps = bitsLoaded / duration
     var speedKbps = (speedBps / 1024).toFixed(2);
+
 	
-	var peliculas = peliculasGlobal
+	var peliBitRateMasBajo = peliculas[0];
 	
-	if (peliculas == null)
+	for(var i = 0; i < peliculas.length; i++)
 	{
-		alert("¡Carga las pelis primero!");
-		return
+		if (peliBitRateMasBajo["bitrate"] > peliculas[i]["bitrate"])
+			peliBitRateMasBajo = peliculas[i] 
 	}
 	
-	var mejorPeli = peliculas[0]
+	var mejorPeli = peliBitRateMasBajo
 	
 	for(var i = 0; i < peliculas.length; i++)
 	{
@@ -299,5 +307,9 @@ function showResults()
 		console.log("se ha comparado " + mejorPeli["bitrate"] + " con " + peliculas[i]["bitrate"] + " y con el BW" + speedKbps) 
 	}
 	
-    alert("Te recomendadmos " + mejorPeli["nombre"]);
+	var mensaje = "Tu ancho de banda es: " + speedKbps + "kb/s \n"
+	if(mejorPeli != peliBitRateMasBajo)
+		alert(mensaje + "Te recomendadmos " + mejorPeli["nombre"]);
+	else
+		alert(mensaje + "Esta es la que tiene menor bitrate: " + mejorPeli["nombre"])
 }
