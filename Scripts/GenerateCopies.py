@@ -26,8 +26,9 @@ def mongo_insert(video):
 		collection.insert_one(video)
 
 def mongo_getId(video):
-	peli=collection.find_one(video)
-	return peli["_id"]
+	if DBEnabled:
+		peli=collection.find_one(video)
+		return peli["_id"]
 		
 # 	Config
 # Variables de configuración para la generación de las copias de vídeo

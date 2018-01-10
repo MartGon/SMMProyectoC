@@ -106,7 +106,7 @@ dbMongoose = mongoose.createConnection(url, function(err, res)
 				{					
 					console.log("Operation not permitted, probaably the file already exists");
 					res.write('Ya existe un video con ese nombre');
-					res.end();
+					return;
 				}
 			});
 			
