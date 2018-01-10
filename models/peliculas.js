@@ -14,7 +14,7 @@ var pelicula = new Schema({
 							 gop: { type: Number },  // Número imágenes entre dos I. O sea un número y solo uno.
 							 entrelazado: { type: Boolean },
 							 original: { type: String },
-							 calidad: { type: float}
+							 calidad: { type: Number}
 						   });
 
 module.exports = mongoose.model('Pelicula', pelicula);
