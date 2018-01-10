@@ -64,7 +64,6 @@ print("El flag elegido es " + str(flag))
 # Abrimos la base de datos
 DBEnabled = True
 try:
-	print(conf["MongoDBPath"] + ":" + int(conf["MongoDBPuerto"]))
 	client = MongoClient(conf["MongoDBPath"], int(conf["MongoDBPuerto"]))
 	client.server_info() 
 except pymongo.errors.ServerSelectionTimeoutError:
