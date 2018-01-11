@@ -15,6 +15,7 @@ import ntpath
 from Functions import getVideoData
 from Functions import getConfData
 from Functions import getBitRate
+from Functions import getQualityValue
 
 from pymongo import MongoClient
 from copy import deepcopy
@@ -25,8 +26,9 @@ def mongo_insert(video):
 		collection.insert_one(video)
 
 def mongo_getId(video):
-	peli=collection.find_one(video)
-	return peli["_id"]
+	if DBEnabled:
+		peli=collection.find_one(video)
+		return peli["_id"]
 		
 # 	Config
 # Variables de configuración para la generación de las copias de vídeo
@@ -64,7 +66,7 @@ print("El flag elegido es " + str(flag))
 # Abrimos la base de datos
 DBEnabled = True
 try:
-	client = MongoClient('localhost', 27017)
+	client = MongoClient(conf["MongoDBPath"], int(conf["MongoDBPuerto"]))
 	client.server_info() 
 except pymongo.errors.ServerSelectionTimeoutError:
 	print("No se pudo conectar a la base de datos. \nSe harán las conversiones pero solo se guardaran los resultados tras volver a ejecutar con la DB activa")
@@ -112,6 +114,7 @@ if flag & 1:
 		videoActual["framerate"] = e;
 		videoActual["bitrate"] = getBitRate(OutputFileNameFPS);
 		videoActual["original"] = original;
+		videoActual["calidad"] = getQualityValue(videoActual)
 		
 		mongo_insert(videoActual)
 	
@@ -146,6 +149,7 @@ if flag & 2:
 		videoActual["resolucionV"] = resolucionV_actual;
 		videoActual["bitrate"] = getBitRate(OutputFileNameRes);
 		videoActual["original"] = original;
+		videoActual["calidad"] = getQualityValue(videoActual)
 		
 		mongo_insert(videoActual)
 	
@@ -184,6 +188,7 @@ if flag & 4:
 			videoActual["resolucionV"] = resolucionV_actual;
 			videoActual["bitrate"] = getBitRate(OutputFileNameCombinado);
 			videoActual["original"] = original;
+			videoActual["calidad"] = getQualityValue(videoActual)
 			
 			mongo_insert(videoActual)
 			
@@ -204,6 +209,7 @@ if flag & 8:
 		videoActual["codec"] = codec;
 		videoActual["bitrate"] = getBitRate(OutputFileNameCodec);
 		videoActual["original"] = original;
+		videoActual["calidad"] = getQualityValue(videoActual)
 		
 		mongo_insert(videoActual)
 	
@@ -224,6 +230,7 @@ if flag & 16:
 		videoActual["gop"] = GOP
 		videoActual["bitrate"] = getBitRate(OutputFileNameGOP);
 		videoActual["original"] = original;
+		videoActual["calidad"] = getQualityValue(videoActual)
 		
 		mongo_insert(videoActual)
 			
@@ -248,6 +255,7 @@ if flag & 32:
 		videoActual["resolucionV"] = resolucionV_actual;
 		videoActual["bitrate"] = getBitRate(OutputFileNameInterlace);
 		videoActual["original"] = original;
+		videoActual["calidad"] = getQualityValue(videoActual)
 		
 		mongo_insert(videoActual)
 			

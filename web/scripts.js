@@ -55,8 +55,10 @@ function printAvailableVideos(peliculas)
 	//var peliculas = getPeliculasFromServer()
 	addLineToLog(peliculas[0]["nombre"])
 	var originales = getOriginales(peliculas)
+	
 	peliculasGlobal = peliculas;
 	resetVideoMenuDiv()
+	writeSelectTag(originales)
 	
 	// Para cada original
 	for(var i = 0; i < originales.length; i++)
@@ -64,8 +66,10 @@ function printAvailableVideos(peliculas)
 		// Cogemos sus replicas
 		var replicas = getReplicasByOriginal(originales[i],peliculas)
 		
-		writeToVideoMenuDiv("<div><h3>" + originales[i]["nombre"] + "</h3>\n")
+		writeToVideoMenuDiv("<div class='video-header-div'><h3 class='video-header'>" + originales[i]["nombre"] + "</h3>\n")
 		addLoadingVideoButton(originales[i])
+		addHideShowButton(originales[i])
+		addHideShowDiv(originales[i])
 		
 		// Para cada categoria
 		for (var categoria in originales[i])
@@ -81,7 +85,7 @@ function printAvailableVideos(peliculas)
 			printVideosByCategoria(replicasByCategoria, categoria)
 		}
 		
-		writeToVideoMenuDiv("</div>")
+		writeToVideoMenuDiv("</div></div>")
 	}
 	
 	doWriteToMenuDiv()
@@ -90,14 +94,35 @@ function printAvailableVideos(peliculas)
 function printVideosByCategoria(replicas, categoria)
 {
 	
-	writeToVideoMenuDiv("<fieldset><h4>"+ categoria +"</h4><fieldset>")
+	writeToVideoMenuDiv("<h4 class='category-header'>"+ categoria +"</h4><fieldset>")
+	writeToVideoMenuDiv('<table style="width:100%">')
 	
 	for (var i = 0; i < replicas.length; i++)
 	{
-		writeToVideoMenuDiv("<p>"+replicas[i]["nombre"]+"</p>")
+		if((i%3) == 0)
+			writeToVideoMenuDiv('<tr>')
+		
+		writeToVideoMenuDiv('<td>')
+		writeToVideoMenuDiv('<div class="floating-box">')
+		writeToVideoMenuDiv("<p class='video-name'>"+replicas[i]["nombre"]+"</p>")
+		writeToVideoMenuDiv("<p>Duración:	" + replicas[i]["duracion"] + " segundos </p>")
+		writeToVideoMenuDiv("<p>Bitrate:	" + replicas[i]["bitrate"] + " kbps</p>")
+		writeToVideoMenuDiv("<p>Framerate:	" + replicas[i]["framerate"] + " fps</p>")
+		writeToVideoMenuDiv("<p>Resolucion:	" + replicas[i]["resolucionH"] +"x"+ replicas[i]["resolucionV"] + "</p>")
+		writeToVideoMenuDiv("<p>GOP:	" + replicas[i]["gop"] + "</p>")
+		writeToVideoMenuDiv("<p>Codec:	" + replicas[i]["codec"] + "</p>")
+		writeToVideoMenuDiv("<p>Entrelazado:	" + replicas[i]["entrelazado"] + "</p>")
+		writeToVideoMenuDiv("<p style = 'color:red;'>Calidad: " + replicas[i]["calidad"] +  "</p>")
 		addLoadingVideoButton(replicas[i])
+		addCopyToClipboardButton(replicas[i])
+		writeToVideoMenuDiv('</div>')
+		writeToVideoMenuDiv('</td>')
+		
+		if((i%3) == 2)
+			writeToVideoMenuDiv('</tr>')
 	}
-	writeToVideoMenuDiv("</fieldset></fieldset>")
+	writeToVideoMenuDiv('</table/>')
+	writeToVideoMenuDiv("</fieldset>")
 
 }
 
@@ -128,16 +153,59 @@ function doWriteToMenuDiv()
 
 function writeSelectTag(originales)
 {
+	var str = '<option value="none">Ninguno de los otros</option>'
 	
+	for(var i = 0; i < originales.length; i++)
+	{
+		str+=  '<option value=' + originales[i]["nombre"] + '>' + originales[i]["nombre"] + '</option>'
+	}
+	
+	document.getElementById("select-upload-vid").innerHTML = str
 }
 
 function addLoadingVideoButton(video)
 {
 	str = "<button type='submit' onclick=\"var videoPlayer = document.getElementById('video-player');";
 	str+= "var source = document.createElement('source');"
-	str+="videoPlayer.pause();source.setAttribute('src','"+ /*videoURL +*/ video["path"] + "');	videoPlayer.innerHTML='';videoPlayer.appendChild(source);videoPlayer.load();videoPlayer.width =" + video["resolucionH"]+ ";videoPlayer.height =" + video["resolucionV"]+ ";\">Cargar video</button>  "
-	console.log(/*videoURL*/ + video["path"]);
-	console.log(str)
+	str+="videoPlayer.pause();source.setAttribute('src','"+ /*videoURL +*/ video["path"] + "');	videoPlayer.innerHTML='';videoPlayer.appendChild(source);videoPlayer.load();videoPlayer.width =" + video["resolucionH"]+ ";videoPlayer.height =" + video["resolucionV"] + ';document.body.scrollTop = document.documentElement.scrollTop = 0' + ";\">Cargar video</button>  "
+	writeToVideoMenuDiv(str)
+}
+
+function addCopyToClipboardButton(video)
+{
+	str = '<br/><br/>Enlace: <input type="text" value=' + video["path"] + ' id=' + video["nombre"] + ' size = "75"><br/></br>'
+	str += '<button onclick="copyUrlToClipboard(\'' + video["nombre"] + '\')">Copiar link</button>'
+	writeToVideoMenuDiv(str)
+}
+
+function copyUrlToClipboard(id)
+{
+	var copyText = document.getElementById(id);
+	copyText.select();
+	document.execCommand("Copy");
+	alert("Copiado el siguiente enlace: " + copyText.value);
+}
+
+function hideShowSection(id) {
+	console.log(id)
+    var x = document.getElementById(id);
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+} 
+
+function addHideShowButton(original)
+{
+	var str = '<button onclick=hideShowSection(\'hide-show-div-' + original["nombre"] + '\');>Mostras/Ocultar Sección</button>'
+	writeToVideoMenuDiv(str)
+
+}
+
+function addHideShowDiv(original)
+{
+	var str = "<div class='hide-show-div' + id='hide-show-div-" + original["nombre"] + "'>";
 	writeToVideoMenuDiv(str)
 }
 
@@ -174,6 +242,7 @@ function getPeliculasFromServer()
 			   peli["gop"] = data[i].gop
 			   peli["entrelazado"] = data[i].entrelazado
 			   peli["original"] = data[i].original
+			   peli["calidad"] = Math.round(data[i].calidad)
 			   
 			   peliculas.push(peli)
 			   addLineToLog(peliculas[i]["nombre"])
@@ -187,13 +256,22 @@ function getPeliculasFromServer()
 	return peliculas
 }
 	
+// 	Funciones relacionadas con el cáluclo de ancho de banda y recomendación	
+	
 	var imageAddr = "http://seasonlegion.ddns.net:/wallpaper.jpg";
 	var startTime, endTime;
-	var downloadSize = 395000;
+	var downloadSize = 395000; // 400 KB
 	var download = new Image();
 
 function testConnection()
 {
+	
+	if (peliculasGlobal == null)
+	{
+		alert("¡Carga las pelis primero!");
+		return
+	}
+	
 	download.onload = function () {
 		endTime = (new Date()).getTime();
 		showResults();
@@ -209,16 +287,18 @@ function showResults()
     var bitsLoaded = downloadSize * 8;
 	var speedBps = bitsLoaded / duration
     var speedKbps = (speedBps / 1024).toFixed(2);
-	
+
 	var peliculas = peliculasGlobal
 	
-	if (peliculas == null)
+	var peliBitRateMasBajo = peliculas[0];
+	
+	for(var i = 0; i < peliculas.length; i++)
 	{
-		alert("¡Carga las pelis primero!");
-		return
+		if (peliBitRateMasBajo["bitrate"] > peliculas[i]["bitrate"])
+			peliBitRateMasBajo = peliculas[i] 
 	}
 	
-	var mejorPeli = peliculas[0]
+	var mejorPeli = peliBitRateMasBajo
 	
 	for(var i = 0; i < peliculas.length; i++)
 	{
@@ -228,5 +308,9 @@ function showResults()
 		console.log("se ha comparado " + mejorPeli["bitrate"] + " con " + peliculas[i]["bitrate"] + " y con el BW" + speedKbps) 
 	}
 	
-    alert("Te recomendadmos " + mejorPeli["nombre"]);
+	var mensaje = "Tu ancho de banda es: " + speedKbps + "kb/s \n"
+	if(mejorPeli != peliBitRateMasBajo)
+		alert(mensaje + "Te recomendadmos " + mejorPeli["nombre"]);
+	else
+		alert(mensaje + "Esta es la que tiene menor bitrate: " + mejorPeli["nombre"])
 }
