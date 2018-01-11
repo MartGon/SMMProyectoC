@@ -98,6 +98,7 @@ dbMongoose = mongoose.createConnection(url, function(err, res)
 				return;
 			}
 			
+			
 			// Guardamos el archivo
 			fs.rename(oldpath, newpath, function(err)
 			{
@@ -178,18 +179,18 @@ dbMongoose = mongoose.createConnection(url, function(err, res)
 				var peli = {}
 				peli["nombre"] = files.filetoupload.name;
 				peli["path"] = path + files.filetoupload.name;
-				peli["resolucionH"] = fields.resolucionH
-				peli["resolucionV"] = fields.resolucionV
-				peli["duracion"] = fields.duracion
-				peli["framerate"] = fields.framerate
+				peli["resolucionH"] = parseInt(fields.resolucionH)
+				peli["resolucionV"] = parseInt(fields.resolucionV)
+				peli["duracion"] = parseFloat(fields.duracion)
+				peli["framerate"] = parseInt(fields.framerate)
 				peli["codec"] = fields.codec
-				peli["bitrate"] = fields.bitrate
-				peli["gop"] = fields.gop
+				peli["bitrate"] = parseInt(fields.bitrate)
+				peli["gop"] = parseInt(fields.gop)
 				if(fields.entrelazado)
 					peli["entrelazado"] = true;
 				else
 					peli["entrelazado"] = false;
-				peli["original"] = 0
+				peli["original"] = "0"
 				
 				// Conectamos con la DB
 				MongoClient.connect(url, function(err, db) 
