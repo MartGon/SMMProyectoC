@@ -153,7 +153,6 @@ def getBitRate(InputFileName):
 	resultadoBitrate_Final = round(int(str(resultadoBitrate).replace("bit_rate=", "").replace("b'","").replace("\\r\\n'", ""))/1000)
 	
 	return resultadoBitrate_Final
-
 	
 def getQualityValue(VideoActual):
 	
